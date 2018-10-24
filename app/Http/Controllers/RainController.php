@@ -12,7 +12,7 @@ class RainController extends Controller
     {
         $queryString = $request->query;
         if ($queryString->get('kindof') == 'month') {
-            return Rain::select(['month', DB::raw('SUM(rain_rate)')])
+            return Rain::select(['month', DB::raw('SUM(rain_rate) total')])
                 ->where('year', $queryString->get('year'))
                 ->groupBy('month')
                 ->get();
