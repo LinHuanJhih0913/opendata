@@ -13,31 +13,67 @@ class AccidentController extends Controller
         $queryString = $request->query;
         if ($queryString->get('kindof') == 'month') {
             if ($queryString->get('district') == null) {
-                return Accident::select(['district', DB::raw('COUNT(district) total')])
-                    ->where('year', $queryString->get('year'))
-                    ->groupBy('district')
-                    ->get();
+                return response()->json([
+                    'result' => 'success',
+                    'kindof' => $queryString->get('kindof'),
+                    'year' => $queryString->get('year'),
+                    'month' => $queryString->get('month'),
+                    'district' => $queryString->get('district'),
+                    'items' => Accident::select(['district', DB::raw('COUNT(district) total')])
+                        ->where('year', $queryString->get('year'))
+                        ->groupBy('district')
+                        ->get(),
+                ], 200, [
+                    'Access-Control-Allow-Origin' => '*',
+                ]);
             }
-            return Accident::select(['month', DB::raw('COUNT(*) total')])
-                ->where('year', $queryString->get('year'))
-                ->where('district', $queryString->get('district'))
-                ->groupBy('month')
-                ->get();
+            return response()->json([
+                'result' => 'success',
+                'kindof' => $queryString->get('kindof'),
+                'year' => $queryString->get('year'),
+                'month' => $queryString->get('month'),
+                'district' => $queryString->get('district'),
+                'items' => Accident::select(['month', DB::raw('COUNT(*) total')])
+                    ->where('year', $queryString->get('year'))
+                    ->where('district', $queryString->get('district'))
+                    ->groupBy('month')
+                    ->get(),
+            ], 200, [
+                'Access-Control-Allow-Origin' => '*',
+            ]);
         }
         if ($queryString->get('kindof') == 'day') {
             if ($queryString->get('district') == null) {
-                return Accident::select(['district', DB::raw('COUNT(district) total')])
+                return response()->json([
+                    'result' => 'success',
+                    'kindof' => $queryString->get('kindof'),
+                    'year' => $queryString->get('year'),
+                    'month' => $queryString->get('month'),
+                    'district' => $queryString->get('district'),
+                    'items' => Accident::select(['district', DB::raw('COUNT(district) total')])
+                        ->where('year', $queryString->get('year'))
+                        ->where('month', $queryString->get('month'))
+                        ->groupBy('district')
+                        ->get(),
+                ], 200, [
+                    'Access-Control-Allow-Origin' => '*',
+                ]);
+            }
+            return response()->json([
+                'result' => 'success',
+                'kindof' => $queryString->get('kindof'),
+                'year' => $queryString->get('year'),
+                'month' => $queryString->get('month'),
+                'district' => $queryString->get('district'),
+                'items' => Accident::select(['day', DB::raw('COUNT(*) total')])
                     ->where('year', $queryString->get('year'))
                     ->where('month', $queryString->get('month'))
-                    ->groupBy('district')
-                    ->get();
-            }
-            return Accident::select(['day', DB::raw('COUNT(*) total')])
-                ->where('year', $queryString->get('year'))
-                ->where('month', $queryString->get('month'))
-                ->where('district', $queryString->get('district'))
-                ->groupBy('day')
-                ->get();
+                    ->where('district', $queryString->get('district'))
+                    ->groupBy('day')
+                    ->get(),
+            ], 200, [
+                'Access-Control-Allow-Origin' => '*',
+            ]);
         }
     }
 
@@ -55,11 +91,13 @@ class AccidentController extends Controller
         } else {
             $accident->addSelect('district');
         }
-        return [
+        return response()->json([
             'year' => $request->route('year'),
             'month' => $request->route('month'),
             'district' => $request->route('district'),
             'items' => $accident->addSelect(['gps_longitude', 'gps_latitude'])->get()
-        ];
+        ], 200, [
+            'Access-Control-Allow-Origin' => '*',
+        ]);
     }
 }

@@ -12,16 +12,32 @@ class RainController extends Controller
     {
         $queryString = $request->query;
         if ($queryString->get('kindof') == 'month') {
-            return Rain::select(['month', DB::raw('SUM(rain_rate) total')])
-                ->where('year', $queryString->get('year'))
-                ->groupBy('month')
-                ->get();
+            return response()->json([
+                'result' => 'success',
+                'kindof' => $queryString->get('kindof'),
+                'year' => $queryString->get('year'),
+                'month' => $queryString->get('month'),
+                'items' => Rain::select(['month', DB::raw('SUM(rain_rate) total')])
+                    ->where('year', $queryString->get('year'))
+                    ->groupBy('month')
+                    ->get(),
+            ], 200, [
+                'Access-Control-Allow-Origin' => '*',
+            ]);
         }
         if ($queryString->get('kindof') == 'day') {
-            return Rain::select(['day', 'rain_rate'])
-                ->where('year', $queryString->get('year'))
-                ->where('month', $queryString->get('month'))
-                ->get();
+            return response()->json([
+                'result' => 'success',
+                'kindof' => $queryString->get('kindof'),
+                'year' => $queryString->get('year'),
+                'month' => $queryString->get('month'),
+                'items' => Rain::select(['day', 'rain_rate'])
+                    ->where('year', $queryString->get('year'))
+                    ->where('month', $queryString->get('month'))
+                    ->get(),
+            ], 200, [
+                'Access-Control-Allow-Origin' => '*',
+            ]);
         }
     }
 }
