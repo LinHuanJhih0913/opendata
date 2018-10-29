@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Accident;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -59,18 +60,28 @@ class AccidentController extends Controller
                     'Access-Control-Allow-Origin' => '*',
                 ]);
             }
+            $result = [];
+            $data = Accident::select(['day', DB::raw('COUNT(*) total')])
+                ->where('year', $queryString->get('year'))
+                ->where('month', $queryString->get('month'))
+                ->where('district', $queryString->get('district'))
+                ->groupBy('day')
+                ->get();
+
+            $dayInmonth = new Carbon("{$queryString->get('year')}-{$queryString->get('month')}");
+            for ($i = 0; $i < $dayInmonth->daysInMonth; $i++) {
+                array_push($result, ['day' => $i + 1, 'total' => 0]);
+            }
+            for ($i = 0; $i < sizeof($data); $i++) {
+                $result[$data[$i]['day'] - 1] = $data[$i];
+            }
             return response()->json([
                 'result' => 'success',
                 'kindof' => $queryString->get('kindof'),
                 'year' => $queryString->get('year'),
                 'month' => $queryString->get('month'),
                 'district' => $queryString->get('district'),
-                'items' => Accident::select(['day', DB::raw('COUNT(*) total')])
-                    ->where('year', $queryString->get('year'))
-                    ->where('month', $queryString->get('month'))
-                    ->where('district', $queryString->get('district'))
-                    ->groupBy('day')
-                    ->get(),
+                'items' => $result,
             ], 200, [
                 'Access-Control-Allow-Origin' => '*',
             ]);
