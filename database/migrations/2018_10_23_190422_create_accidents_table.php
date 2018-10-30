@@ -15,14 +15,10 @@ class CreateAccidentsTable extends Migration
     {
         Schema::create('accidents', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('year');
-            $table->integer('month');
-            $table->integer('day');
+            $table->date('date');
+            $table->time('time');
             $table->string('city');
             $table->string('district');
-            $table->string('gps_longitude');
-            $table->string('gps_latitude');
-//            $table->string('time');
             $table->timestamps();
         });
     }
