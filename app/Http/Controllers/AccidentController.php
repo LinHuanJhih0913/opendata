@@ -111,4 +111,20 @@ class AccidentController extends Controller
             'Access-Control-Allow-Origin' => '*',
         ]);
     }
+
+    public function sdg(Request $request)
+    {
+        $accident = Accident::query();
+        if ($request->route('district') != null) {
+            $accident->where('district', $request->route('district'));
+        }
+        $accident->addSelect([DB::raw('YEAR(date) year'), DB::raw('COUNT(city) total')]);
+        $accident->groupBy([DB::raw('YEAR(date)')]);
+        return response()->json([
+            'district' => $request->route('district'),
+            'items' => $accident->get(),
+        ], 200, [
+            'Access-Control-Allow-Origin' => '*',
+        ]);
+    }
 }
