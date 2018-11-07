@@ -18,7 +18,6 @@ class CreateTemperaturesTable extends Migration
             $table->year('year');
             $table->string('month', 2);
             $table->double('temperature', 3, 1);
-            $table->timestamps();
         });
     }
 

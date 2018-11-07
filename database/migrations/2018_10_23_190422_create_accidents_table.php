@@ -19,7 +19,8 @@ class CreateAccidentsTable extends Migration
             $table->time('time');
             $table->string('city');
             $table->string('district');
-            $table->timestamps();
+            $table->string('gps_longitude')->nullable();
+            $table->string('gps_latitude')->nullable();
         });
     }
 

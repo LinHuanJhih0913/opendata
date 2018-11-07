@@ -17,7 +17,6 @@ class CreateRainfallsTable extends Migration
             $table->increments('id');
             $table->date('date');
             $table->double('rainfall',5,1);
-            $table->timestamps();
         });
     }
 

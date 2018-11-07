@@ -14,7 +14,7 @@ class AccidentTableSeeder extends Seeder
         // GPS data
         if (($handle = fopen(public_path("raw/accident-20180101-20180906.csv"), "r")) !== FALSE) {
             while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-                \App\Accidentwithgps::create([
+                \App\Accident::create([
                     'date' => $data[0],
                     'time' => $data[1],
                     'city' => $data[2],
