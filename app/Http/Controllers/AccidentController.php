@@ -92,10 +92,10 @@ class AccidentController extends Controller
     {
         $accident = Accident::query();
         if ($request->route('year') != null) {
-            $accident->where('year', $request->route('year'));
+            $accident->where(DB::raw('YEAR(date)'), $request->route('year'));
         }
         if ($request->route('month') != null) {
-            $accident->where('month', $request->route('month'));
+            $accident->where(DB::raw('MONTH(date)'), $request->route('month'));
         }
         if ($request->route('district') != null) {
             $accident->where('district', $request->route('district'));
