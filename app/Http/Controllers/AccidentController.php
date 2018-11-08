@@ -20,8 +20,8 @@ class AccidentController extends Controller
                     'year' => $queryString->get('year'),
                     'month' => $queryString->get('month'),
                     'district' => $queryString->get('district'),
-                    'items' => Accident::select(['district', DB::raw('COUNT(district) total')])
-                        ->where('year', $queryString->get('year'))
+                    'items' => Accident::select(['district', DB::raw('COUNT(district) as total')])
+                        ->where(DB::raw('YEAR(date)'), $queryString->get('year'))
                         ->groupBy('district')
                         ->get(),
                 ], 200, [
@@ -34,10 +34,10 @@ class AccidentController extends Controller
                 'year' => $queryString->get('year'),
                 'month' => $queryString->get('month'),
                 'district' => $queryString->get('district'),
-                'items' => Accident::select(['month', DB::raw('COUNT(*) total')])
-                    ->where('year', $queryString->get('year'))
+                'items' => Accident::select([DB::raw('MONTH(date) as month, COUNT(*) as total')])
+                    ->where(DB::raw('YEAR(date)'), $queryString->get('year'))
                     ->where('district', $queryString->get('district'))
-                    ->groupBy('month')
+                    ->groupBy(DB::raw('MONTH(date)'))
                     ->get(),
             ], 200, [
                 'Access-Control-Allow-Origin' => '*',
@@ -51,9 +51,9 @@ class AccidentController extends Controller
                     'year' => $queryString->get('year'),
                     'month' => $queryString->get('month'),
                     'district' => $queryString->get('district'),
-                    'items' => Accident::select(['district', DB::raw('COUNT(district) total')])
-                        ->where('year', $queryString->get('year'))
-                        ->where('month', $queryString->get('month'))
+                    'items' => Accident::select(['district', DB::raw('COUNT(district) as total')])
+                        ->where(DB::raw('YEAR(date)'), $queryString->get('year'))
+                        ->where(DB::raw('MONTH(date)'), $queryString->get('month'))
                         ->groupBy('district')
                         ->get(),
                 ], 200, [
@@ -61,11 +61,11 @@ class AccidentController extends Controller
                 ]);
             }
             $result = [];
-            $data = Accident::select(['day', DB::raw('COUNT(*) total')])
-                ->where('year', $queryString->get('year'))
-                ->where('month', $queryString->get('month'))
+            $data = Accident::select([DB::raw('DAY(date) as day, COUNT(*) as total')])
+                ->where(DB::raw('YEAR(date)'), $queryString->get('year'))
+                ->where(DB::raw('MONTH(date)'), $queryString->get('month'))
                 ->where('district', $queryString->get('district'))
-                ->groupBy('day')
+                ->groupBy(DB::raw('DAY(date)'))
                 ->get();
 
             $dayInmonth = new Carbon("{$queryString->get('year')}-{$queryString->get('month')}");
