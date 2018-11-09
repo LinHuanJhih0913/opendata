@@ -91,6 +91,12 @@ class AccidentController extends Controller
     public function detail(Request $request)
     {
         $accident = Accident::query();
+        if ($request->query('start_at') != null) {
+            $accident->where('time', '>=', $request->query('start_at'));
+        }
+        if ($request->query('end_at') != null) {
+            $accident->where('time', '<=', $request->query('end_at'));
+        }
         if ($request->route('year') != null) {
             $accident->where(DB::raw('YEAR(date)'), $request->route('year'));
         }
@@ -106,6 +112,8 @@ class AccidentController extends Controller
             'year' => $request->route('year'),
             'month' => $request->route('month'),
             'district' => $request->route('district'),
+            'start_at' => $request->query('start_at'),
+            'end_at' => $request->query('end_at'),
             'items' => $accident->addSelect(['gps_longitude', 'gps_latitude'])->get()
         ], 200, [
             'Access-Control-Allow-Origin' => '*',
